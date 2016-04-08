@@ -16,19 +16,9 @@
      same chip as the processor). Sizes vary from the mid-K range (e.g., 250K bytes) to the
      low M range (e.g., 1M or even 2M bytes).
 
-# Access to the registers is quite fast: for comparison, we can assume the 'latency' (delay in accessing
-  the register) is 0. 
-
-# Access to main memory is significantly slower, with a latency of roughly 2 to 10 ticks of the system clock.
-
-  ## The bad news: the number of registers is limited. On a standard 64-bit Intel processor, there are
-     16 64-bit general-purpose registers and another 16 64-bit floating-point registers suitable for
-     'scratchpad' storage during standard operations (e.g., adding two numbers, and then multiplying their
-     sum by another).
-
-  ## The Intel names can be confusing. On 32-bit Intel machines, the general-purpose register names begin
-     with 'e' for extended. On the 64-bit machines, these names remain, but there are also paired 'r' names.
-     Here's the key idea, using register %rax as an example:
+  ## The Intel names for registers can be confusing. On 32-bit Intel machines, the general-purpose register names begin
+     with 'e' for extended. On the 64-bit machines, these names remain, but there are also paired 'r' names for 64-bit
+     versions of the registers. The physical storage is shared between the 'e' and 'r' registers:
 
              high-order bits   low-order bits
            +-----------------+----------------+
@@ -36,16 +26,49 @@
            +-----------------+----------------+
     	        32 bits           32 bits
 
-# Summary of latencies (delays) for accessing data/instructions in a memory component
+# Summary of latencies (delays) and sizes for the memory components:
 
                             Latency        Approximate byte size
                         ---------------  --------------------------  
-       register:          0.5       ns        very low K
-       on-chip L1 cache:  1.0       ns             mid K
-       L2 cache:          2.0 - 4.0 ns             low M
-       Main memory:     100.0       ns      low to mid G
+       register:           0.5     ns         very low K
+       on-chip L1 cache:   1.0     ns              mid K
+       L2 cache:           2.0-4.0 ns              low M
+       Main memory:      100.0     ns       low to mid G
 
        Note: Assume a system clock tick of roughly 0.5 ns (or lower).
+
+# Stack versus heap
+
+  ## Both belong to main memory. On an Intel machine, stack addresses go from high to low; and heap
+     addresses go from low to high.
+
+  ## Stack storage is 'automatically' allocated and deallocated in that the compiler inserts the
+     appropriate system calls to allocated stack storage as needed, and to deallocate such storage when
+     the block exits.
+
+  ## In general, the stack stores variables local to a block (e.g., local variables in Rust function).
+
+  ## In general, the heap stores dynamically allocated storage to which a local variable may point.
+
+     ## In many modern languages, the operator 'new' allocates dynamically allocated storage; in C,
+        the library functions malloc/calloc are used:
+
+           ArrayList<String> strings = new ArrayList<String>();   // Java
+           char* one_string = malloc(64);                         /* allocate 64 bytes */
+
+    ## Here are two Rust bindings, each inside main(), to illustrate what's stored where:
+
+                  the array values are on the stack    
+                          \
+         let array = [1, 2, 3, 4, 5];  // array of 5 integers, each element initialized to -1
+
+         ### An array is fixed-size: its size never changes
+
+                      the vector values are on the heap
+                                  \
+         let vector = vec![-1, -2, -3, -4, -5];  // a vector of 5 integers
+
+         ### A vector can grow and shrink in size.
 
 # Overview of the memory components that the (Rust) compiler wants to use for storing program data and instructions
 
