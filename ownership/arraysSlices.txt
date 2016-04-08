@@ -1,0 +1,48 @@
+
+ -- Arrays and slices in Rust
+
+ Here's a quick summary of the differences:
+
+ # An array is fixed-sized, and its size is determined at compile-time.
+ 
+   ## An array cannot be 'resized': it retains its original size.
+
+ # An array slice, or just 'slice' for short, is variable-size, and its size is determined at run-time.
+ *******
+
+ # Here's a depiction of an array of size 5. Its elements have different values for readability:
+
+   +----+----+----+----+----+
+   | -1 | -2 | -3 | -4 | -5 |   ## fixed-sized array of size 5
+   +----+----+----+----+----+
+
+ # Here's a depiction of two slices:
+
+    start of slice   end of slice
+          \          /
+   +----+----+----+----+----+
+   | -1 | -2 | -3 | -4 | -5 |   ## a 'slice' of 3 elements
+   +----+----+----+----+----+
+
+   start of slice   end of slice
+     \               /
+   +----+----+----+----+----+
+   | -1 | -2 | -3 | -4 | -5 |   ## a 'slice' of 4 elements
+   +----+----+----+----+----+
+
+   ## Elements in the slice, like those in array, are contiguous.
+
+   ## Slices, like arrays, can be indexed starting with 0.
+
+   ## The entire array counts as a slice:
+
+  start of slice       end of slice
+     \                    /
+   +----+----+----+----+----+
+   | -1 | -2 | -3 | -4 | -5 |   ## a 'slice' consisting of the entire original array
+   +----+----+----+----+----+
+
+ # Passing slices to functions is attractive because the same function then can handle
+   slices of different sizes: think flexibility.
+
+

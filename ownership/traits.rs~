@@ -1,0 +1,8 @@
+struct Button {
+    x:      i32,      // x-coordinate
+    y:      i32,      // y-coordinate
+    w:      i32,      // width
+    h:      i32,      // height
+    opaque: bool,     // opposite of transparent
+    label:  &str
+}

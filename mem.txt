@@ -1,0 +1,94 @@
+
+-- Registers, stack, and heap: how it all fits in with the Rust compiler
+
+# Here's a depiction of two levels in the memory hierarchy: the register bank on the processor,
+  and main memory partitioned into four areas. The processor in question is for a standard
+  Intel 64-bit machine, but depictions of other processors would be quite similar:
+
+    processor   data and instructsions       main memory
++---------------+      /      +--------------------------------------------+
+| +----+----+   |    words    |+-----+ +----+ +---------+ +---------------+|
+| |%rax|%rbx|...|<----------->||stack| |heap| |libraries| |app code + data||  ## not drawn to scale
+| +----+----+   |             |+-----+ +----+ +---------+ +---------------+|
++---------------+             +--------------------------------------------+
+
+  ## In addition to registers, modern processors also have cache memories 'on chip' (i.e., on the
+     same chip as the processor). Sizes vary from the mid-K range (e.g., 250K bytes) to the
+     low M range (e.g., 1M or even 2M bytes).
+
+# Access to the registers is quite fast: for comparison, we can assume the 'latency' (delay in accessing
+  the register) is 0. 
+
+# Access to main memory is significantly slower, with a latency of roughly 2 to 10 ticks of the system clock.
+
+  ## The bad news: the number of registers is limited. On a standard 64-bit Intel processor, there are
+     16 64-bit general-purpose registers and another 16 64-bit floating-point registers suitable for
+     'scratchpad' storage during standard operations (e.g., adding two numbers, and then multiplying their
+     sum by another).
+
+  ## The Intel names can be confusing. On 32-bit Intel machines, the general-purpose register names begin
+     with 'e' for extended. On the 64-bit machines, these names remain, but there are also paired 'r' names.
+     Here's the key idea, using register %rax as an example:
+
+             high-order bits   low-order bits
+           +-----------------+----------------+
+     %rax: | %rax-only bits  |   %eax bits    | ## %rax identifies the full 64-bit register, %eax the 32 low-order bits
+           +-----------------+----------------+
+    	        32 bits           32 bits
+
+# Summary of latencies (delays) for accessing data/instructions in a memory component
+
+                            Latency        Approximate byte size
+                        ---------------  --------------------------  
+       register:          0.5       ns        very low K
+       on-chip L1 cache:  1.0       ns             mid K
+       L2 cache:          2.0 - 4.0 ns             low M
+       Main memory:     100.0       ns      low to mid G
+
+       Note: Assume a system clock tick of roughly 0.5 ns (or lower).
+
+# Overview of the memory components that the (Rust) compiler wants to use for storing program data and instructions
+
+   ## The preferred memory for local variables such as n1, n2, and prod in main() is the register bank: the
+      CPU registers on the same chip as the processor itself. 
+
+      The 'stack' in main memory is, in effect, the fallback for scratchpad storage. Each callable block of code
+      (e.g., a Rust function) gets is own 'call frame' (aka 'stack frame') to store local variables. The 
+      call frame grows and shrinks automatically as needed, and the system reclaims a call frame once a 
+      callable block exists (e.g., a Rust function returns).
+
+      The 'heap' holds dynamically allocated storage, the kind allocated in languages such as Java by the
+      'new' operator (e.g., String s = new String(); ).
+   
+# Trace of what happens when main() calls multiply(...) in the 'multiply' program, assuming the stack is being used:
+
+  1. main() starts executing.        ## main() automatically gets a 'call frame' allocated for storing
+                                        local variables, in this case the i32 variables n1, n2, and prod.
+
+  2. main() calls multiply(n1, n2).
+
+
+
+
+    	### Assembly language and the stack
+
+
+
+   	
+   	int main() {                   +===========+
+   	  no_op(777, 333);             |           |<=== main's %ebp, <=== %esp: (c)
+   	  /*...*/                      +-----------+
+   	}                                    ...       
+   	                               +-----------+
+   	void no_op(int a, int b) {     |    333    | ;; call to no_op(..., 333) 
+   	    int y = 5;                 +-----------+ 
+   	    int z = 9;                 |    777    | ;; call to no_op(777, ...)
+   	    y += b;                    +--- -------+
+   	    z += a;                    |main's %eip| ;; call to no_op, <=== %esp: (c)     
+   	    return;                    +===========+
+   	}                              |main's %ebp|<=== no_op's %ebp & %esp: (1), (2), (c)
+   	                               +-----------+
+   	                               | 5, 338    | -4(%ebp): (4), (8)
+   	                               +-----------+
+   	                               | 9, 876    |<=== %esp: (3), (b)
+   	                               +-----------+
