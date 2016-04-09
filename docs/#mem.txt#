@@ -1,0 +1,117 @@
+
+-- Registers, stack, and heap: how it all fits in with the Rust compiler
+
+# Here's a depiction of two levels in the memory hierarchy: the register bank on the processor,
+  and main memory partitioned into four areas. The processor in question is for a standard
+  Intel 64-bit machine, but depictions of other processors would be quite similar:
+
+    processor   data and instructsions       main memory
++---------------+      /      +--------------------------------------------+
+| +----+----+   |    words    |+-----+ +----+ +---------+ +---------------+|
+| |%rax|%rbx|...|<----------->||stack| |heap| |libraries| |app code + data||  ## not drawn to scale
+| +----+----+   |             |+-----+ +----+ +---------+ +---------------+|
++---------------+             +--------------------------------------------+
+
+  ## In addition to registers, modern processors also have cache memories 'on chip' (i.e., on the
+     same chip as the processor). Sizes vary from the mid-K range (e.g., 250K bytes) to the
+     low M range (e.g., 1M or even 2M bytes).
+
+  ## The Intel names for registers can be confusing. On 32-bit Intel machines, the general-purpose register names begin
+     with 'e' for extended. On the 64-bit machines, these names remain, but there are also paired 'r' names for 64-bit
+     versions of the registers. The physical storage is shared between the 'e' and 'r' registers:
+
+             high-order bits   low-order bits
+           +-----------------+----------------+
+     %rax: | %rax-only bits  |   %eax bits    | ## %rax identifies the full 64-bit register, %eax the 32 low-order bits
+           +-----------------+----------------+
+    	        32 bits           32 bits
+
+# Summary of latencies (delays) and sizes for the memory components:
+
+                            Latency        Approximate byte size
+                        ---------------  --------------------------  
+       register:           0.5     ns         very low K
+       on-chip L1 cache:   1.0     ns       low to mid K
+       L2 cache:           2.0-4.0 ns              low M
+       Main memory:      100.0     ns       low to mid G
+
+       Note: Assume a system clock tick of roughly 0.5 ns (or lower).
+
+# Stack versus heap
+
+  ## Both belong to main memory. On an Intel machine, stack addresses go from high to low; and heap
+     addresses go from low to high.
+
+  ## Stack storage is 'automatically' allocated and deallocated in that the compiler inserts the
+     appropriate system calls to allocated stack storage as needed, and to deallocate such storage when
+     the block exits.
+
+  ## In general, the stack stores variables local to a block (e.g., local variables in Rust function).
+
+  ## In general, the heap stores dynamically allocated storage to which a local variable may point.
+
+     ## In many modern languages, the operator 'new' allocates dynamically allocated storage; in C,
+        the library functions malloc/calloc are used:
+
+           ArrayList<String> strings = new ArrayList<String>();   // Java -- list of strings, empty to begin
+           char* one_string = malloc(64);                         /* C: allocate 64 bytes */
+
+    ## Here are two Rust bindings, each inside main(), to illustrate what's stored where:
+
+                  the array values are on the stack    
+                          \
+         let array = [1, 2, 3, 4, 5];  // array of 5 integers, each element initialized to -1
+
+         ### An array is fixed-size: its size never changes
+
+                      the vector values are on the heap
+                                  \
+         let vector = vec![-1, -2, -3, -4, -5];  // a vector of 5 integers
+
+         ### A vector can grow and shrink in size at run-time--dynamic resizing.
+
+# Overview of the memory components that the (Rust) compiler wants to use for storing program data and instructions
+
+   ## The preferred memory for local variables such as n1, n2, and prod in main() is the register bank: the
+      CPU registers on the same chip as the processor itself. 
+
+      The 'stack' in main memory is, in effect, the fallback for scratchpad storage. Each callable block of code
+      (e.g., a Rust function) gets is own 'call frame' (aka 'stack frame') to store local variables. The 
+      call frame grows and shrinks automatically as needed, and the system reclaims a call frame once a 
+      callable block exists (e.g., a Rust function returns).
+
+      The 'heap' holds dynamically allocated storage, the kind allocated in languages such as Java by the
+      'new' operator (e.g., String s = new String(); ).
+   
+# Trace of what happens when main() calls multiply(...) in the 'multiply' program, assuming the stack is being used:
+
+  1. main() starts executing.        ## main() automatically gets a 'call frame' allocated for storing
+                                        local variables, in this case the i32 variables n1, n2, and prod.
+
+  2. main() calls multiply(n1, n2).
+
+
+
+
+    	### Assembly language and the stack
+
+
+
+   	
+   	int main() {                   +===========+
+   	  no_op(777, 333);             |           |<=== main's %ebp, <=== %esp: (c)
+   	  /*...*/                      +-----------+
+   	}                                    ...       
+   	                               +-----------+
+   	void no_op(int a, int b) {     |    333    | ;; call to no_op(..., 333) 
+   	    int y = 5;                 +-----------+ 
+   	    int z = 9;                 |    777    | ;; call to no_op(777, ...)
+   	    y += b;                    +--- -------+
+   	    z += a;                    |main's %eip| ;; call to no_op, <=== %esp: (c)     
+   	    return;                    +===========+
+   	}                              |main's %ebp|<=== no_op's %ebp & %esp: (1), (2), (c)
+   	                               +-----------+
+   	                               | 5, 338    | -4(%ebp): (4), (8)
+   	                               +-----------+
+   	                               | 9, 876    |<=== %esp: (3), (b)
+   	                               +-----------+
