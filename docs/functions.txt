@@ -1,5 +1,5 @@
  
- -- Rust basics: functions
+ -- Rust basics: program structure and functions
 
  # A Rust program consists of one or more functions, one of which is 'main'.
 
@@ -11,6 +11,7 @@
          // function's body
       }
 
+      // 1st comes the argument's name, then a colon, and then the data type
       fn foo(arg: i32) { // function takes one argument, returns nothing
          // function's body
       }
@@ -19,6 +20,12 @@
          // function's body
          
       }
+
+      // a function can return multiple values, not just one
+      fn baz(num: f32) -> (f32, f32) {
+         // function's body
+      }
+
 
    ## The functions can occur in any order in a source file, and a program's
       functions may be distributed among several source files.
