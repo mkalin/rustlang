@@ -1,0 +1,51 @@
+ 
+ -- Rust basics: functions
+
+ # A Rust program consists of one or more functions, one of which is 'main'.
+
+   ## The function named 'main' is the program's entry point.
+
+   ## Sketch of a sample program:
+
+      fn main() {
+         // function's body
+      }
+
+      fn foo(arg: i32) { // function takes one argument, returns nothing
+         // function's body
+      }
+
+      fn bar(num: f32) -> f32 {
+         // function's body
+         
+      }
+
+   ## The functions can occur in any order in a source file, and a program's
+      functions may be distributed among several source files.
+
+ # Functions come in two flavors: regular functions (as sketched above) and
+   methods:
+
+     // program slice to illustrate a method
+     let array = [1, 2, 3];  // an array of three integers
+     for n in array.iter()   // iter() is an array method for iterating over an array
+       ...
+
+ # All functions can take none or more arguments, and optionally return a value. Although
+   Rust has a 'return' statement, the preferred way to return a value is to make the
+   corresponding expression the last in a function:
+
+     // using an explicit return statement
+     fn sum(n1: i32, n2: i32) -> i32 {
+        return n1 + n1;  // return statement: note the semicolon at the end
+     }
+
+     // using an expression
+     fn sum(n1: i32, n2: i32) -> i32 {
+        n1 + n2         // note well: no semicolon
+     }
+
+
+
+
+  

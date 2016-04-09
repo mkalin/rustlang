@@ -1,0 +1,30 @@
+
+ -- Rust basics: bindings
+
+ # In programming languages such as C/C++, C#/Java, and JavaScript/Perl/Python/Ruby,
+   the 'variable' is the rule, and the 'constant' is an exception to this rule.
+
+   ## Consider a Java example (allthough it count as a C/C++/C# example as well):
+
+      int n = 1;  // n is a variable by default
+      n += 10;    // hence, n's value can be changed
+
+   ## To make n a constant, we need to add something:
+
+      final int n = 1; // n is now a constant: its value can't be changed
+      n += 10;         // compile-time error
+      n = 1;           // still a compile-time error
+
+ # The Rust counterpart to these examples is a 'binding', which links a name to a value.
+
+   ## In Rust, the default is an immutable binding.
+
+      let n = 1;   // bind the name 'n' to the integer value 1
+      n += 10;     // compile-time error: the binding is immutable by default. 
+                   // In effect, n is a 'constant'.
+
+      let mut k = 5; // the binding is now 'mutable'
+      k += 20;       // ok
+                     // In effect, k is a 'variable'.
+ 
+      

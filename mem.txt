@@ -53,8 +53,8 @@
      ## In many modern languages, the operator 'new' allocates dynamically allocated storage; in C,
         the library functions malloc/calloc are used:
 
-           ArrayList<String> strings = new ArrayList<String>();   // Java
-           char* one_string = malloc(64);                         /* allocate 64 bytes */
+           ArrayList<String> strings = new ArrayList<String>();   // Java -- list of strings, empty to begin
+           char* one_string = malloc(64);                         /* C: allocate 64 bytes */
 
     ## Here are two Rust bindings, each inside main(), to illustrate what's stored where:
 
@@ -68,7 +68,7 @@
                                   \
          let vector = vec![-1, -2, -3, -4, -5];  // a vector of 5 integers
 
-         ### A vector can grow and shrink in size.
+         ### A vector can grow and shrink in size at run-time--dynamic resizing.
 
 # Overview of the memory components that the (Rust) compiler wants to use for storing program data and instructions
 

@@ -34,6 +34,10 @@ fn main() {
     let (x, y) = (-1, -2);  // multiple bindings in one statement
     println!("{} {}", x, y);
 
+    // an array binding
+    let a1 = [1, 2, 3, 4, 5];
+    println!("{:?}", a1);
+
     // Below is a short block, consisting of two statements.
     {
         let z = 9876;
