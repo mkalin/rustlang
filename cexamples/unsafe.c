@@ -12,7 +12,7 @@
    first character in the string), and the 'const' in 'const char* src' signals 
    that the pointer named 'src' is not used to change the source string.
 
-   This problem first shows the proper way to use the library function,
+   This program first shows the proper way to use the library function,
    and then illustrates 'unsafe' memory with a well-known, incorrect use of the
    same function.
 */
