@@ -47,7 +47,7 @@
          println!("{} {}", n, m); // ok because n and m are both 'in scope'
       }                           // end of nested block
       println!("{} {}", n, m);    // ### error: m is no longer 'in scope'
-   }
+   }                              // closing brace of main
 
       
 
