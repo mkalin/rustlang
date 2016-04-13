@@ -25,6 +25,7 @@
       let mut k = -1; // a mutable binding
       k = k + 1;      // ok: the binding is mutable -- the name can be linked to a different i32 value
                       // to produce a new binding.
+      let k = k;      // a new--and immutable--binding of 'k' with the value 0
 
       let r: i32 = -999; // an immutable binding with the type (i32) given explicitly.
 
