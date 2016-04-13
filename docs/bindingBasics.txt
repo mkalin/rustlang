@@ -3,8 +3,7 @@
 
  # In programming languages such as C/C++, C#/Java, and JavaScript/Perl/Pyton/Ruby,
    the 'variable declaration' is a familiar construct, although the syntax may differ
-   (perhaps just slightly) among the languages. There's a Java example, with comments
-   to clarify:
+   (perhaps just slightly) among the languages. There's a Java example, with comments:
 
       int num = -1;   // declare a variable named 'num' and initialize its value to -1
       num = num + 1;  // increment the variable: its value is now 0
@@ -17,7 +16,8 @@
       num = 1;             // ### still an error -- can't reset even to the initial value
 
  # Rust has 'variable bindings' rather than variable declarations. There are some syntactic
-   similarities, but there are important, if subtle, underlying differences.
+   similarities, but there are important, if subtle, underlying differences. Here's a
+   summary of some differences to begin; other differences are covered later.
 
       let num = 27;   // bind the identifier 'num' with the i32 (32-bit signed integer) value 27
       num = num + 1;  // ### error: by default, a binding is immutable
@@ -28,8 +28,14 @@
 
       let r: i32 = -999; // an immutable binding with the type (i32) given explicitly.
 
-      let s: i32;        // type must be given, as it can't be inferred from a value -- in effect,
-                         // a 'binding in preparation', as a value hasn't been given yet.
+      let s: i32;        // the type must be given, as it can't be inferred from a value -- in effect,
+                         // a 'binding in preparation', as a value bound to the name 's' hasn't been given yet. 
+      println!("{}", s); // ### error -- the binding hasn't been initialized and so can't be used.
+                         // The {} in "{}" is the 'string interpolation' operator. There's only one occurrence,
+                         // which means that the value of 's' should be inserted.
+
+      s = 123;           // supply the required binding value
+      println!("Put the value {} here, not elswhere.", s); // outputs: Put the value 127 here, not elsewhere. 
 
       
 
