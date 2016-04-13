@@ -1,30 +1,37 @@
 
- -- Rust basics: bindings
+ -- Rust basics: bindings versus variable declarations
 
- # In programming languages such as C/C++, C#/Java, and JavaScript/Perl/Python/Ruby,
-   the 'variable' is the rule, and the 'constant' is an exception to this rule.
+ # In programming languages such as C/C++, C#/Java, and JavaScript/Perl/Pyton/Ruby,
+   the 'variable declaration' is a familiar construct, although the syntax may differ
+   (perhaps just slightly) among the languages. There's a Java example, with comments
+   to clarify:
 
-   ## Consider a Java example (allthough it count as a C/C++/C# example as well):
+      int num = -1;   // declare a variable named 'num' and initialize its value to -1
+      num = num + 1;  // increment the variable: its value is now 0
+      num = num + 2;  // increment by 2 this time: value is now 2
 
-      int n = 1;  // n is a variable by default
-      n += 10;    // hence, n's value can be changed
+   ## To prevent updates, these languages provide keywords such as 'final' or the like:
 
-   ## To make n a constant, we need to add something:
+      final int num = 1;   // declare a 'final' int and initialize it to 1
+      num = num + 1;       // ### error
+      num = 1;             // ### still an error -- can't reset even to the initial value
 
-      final int n = 1; // n is now a constant: its value can't be changed
-      n += 10;         // compile-time error
-      n = 1;           // still a compile-time error
+ # Rust has 'variable bindings' rather than variable declarations. There are some syntactic
+   similarities, but there are important, if subtle, underlying differences.
 
- # The Rust counterpart to these examples is a 'binding', which links a name to a value.
+      let num = 27;   // bind the identifier 'num' with the i32 (32-bit signed integer) value 27
+      num = num + 1;  // ### error: by default, a binding is immutable
 
-   ## In Rust, the default is an immutable binding.
+      let mut k = -1; // a mutable binding
+      k = k + 1;      // ok: the binding is mutable -- the name can be linked to a different i32 value
+                      // to produce a new binding.
 
-      let n = 1;   // bind the name 'n' to the integer value 1
-      n += 10;     // compile-time error: the binding is immutable by default. 
-                   // In effect, n is a 'constant'.
+      let r: i32 = -999; // an immutable binding with the type (i32) given explicitly.
 
-      let mut k = 5; // the binding is now 'mutable'
-      k += 20;       // ok
-                     // In effect, k is a 'variable'.
+      let s: i32;        // type must be given, as it can't be inferred from a value -- in effect,
+                         // a 'binding in preparation', as a value hasn't been given yet.
+
+      
+
  
       
