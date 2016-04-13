@@ -1,0 +1,17 @@
+fn main() {
+
+    //*** The problem below is that storarge for n could be freed before storage for r.
+   let r: &i32;   // a reference to an i32 binding: scope starts here
+   let n = -123;  // an i32 binding: scope starts here -- hence narrow than that of the reference
+   r = &n;        // ERROR: attempt to borrow, but r's scope is greather than n's
+
+   //*** The problem below is that storarge for n could be freed before storage for r.
+   let n = -123;  // an i32 binding 
+   let r: &i32;   // ok
+   r = &n;        // ok
+
+   // short version
+   len n = -123;
+   let r = &n;   // ok
+
+}

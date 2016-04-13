@@ -1,0 +1,105 @@
+one or more references (&T) to a resource,
+exactly one mutable reference (&mut T).
+
+You may notice that this is very similar, though not exactly the same as, to the definition of a data race:
+
+There is a ‘data race’ when two or more pointers access the same memory location at the same time, where at least one of them is writing, and the operations are not synchronized.
+
+The & is the 'borrowing' operator -- it doesn't move ownership, but rather borrows it.
+
+The owner must have a scope greater than or equal to that of the borrow.
+
+   //*** The problem below is that storarge for n could be freed before storage for r.
+   let r: &i32;   // a reference to an i32 binding: scope starts here
+   let n = -123;  // an i32 binding: scope starts here -- hence narrow than that of the reference
+   r = &n;        // ERROR: attempt to borrow, but r's scope is greather than n's
+
+   //*** The problem below is that storarge for n could be freed before storage for r.
+   let n = -123;  // an i32 binding 
+   let r: &i32;   // ok
+   r = &n;        // ok
+
+   // short version
+   len n = -123;
+   let r = &n;   // ok
+
+
+let mut x = 5;
+
+{
+    let y = &mut x; // -+ &mut borrow starts here
+    *y += 1;        //  |
+}                   // -+ ... and ends here
+
+println!("{}", x);  // <- try to borrow x here
+
+
+Hello fellow rustaceans,
+I am confused about the difference between the following two lines of code:
+let mut x = &y;
+let ref mut x = y;
+They both appear to assign x to a mutable reference to y, but in practice one will give the results I want and one 
+will not. What is the difference?
+
+let mut x = &y creates a pointer to y which you can change to point to something else. That is, the pointer itself is mutable.
+
+let ref mut x = y creates a pointer to a mutable y. You can use it to modify y, but it cannot be changed to point to a different value. 
+
+It's identical to let x = &mut y.
+
+### MACROS
+
+Macros allow us to abstract at a syntactic level. A macro invocation is shorthand for an "expanded" syntactic form. 
+This expansion happens early in compilation, before any static checking. As a result, macros can capture many patterns of code 
+reuse that Rust’s core abstractions cannot.
+
+macro_rules! foo {
+    (x => $e:expr) => (println!("mode X: {}", $e));
+    (y => $e:expr) => (println!("mode Y: {}", $e));
+}
+
+fn main() {
+    foo!(y => 3);
+}
+
+### const and static
+Rust has a way of defining constants with the const keyword:
+
+const N: i32 = 5;
+Unlike let bindings, you must annotate the type of a const.
+
+Constants live for the entire lifetime of a program. More specifically, constants in Rust have no fixed address in memory. This is 
+because they’re effectively inlined to each place that they’re used. References to the same constant are not necessarily guaranteed 
+to refer to the same memory address for this reason.
+
+static
+
+Rust provides a ‘global variable’ sort of facility in static items. They’re similar to constants, but static items aren’t inlined upon use. 
+This means that there is only one instance for each value, and it’s at a fixed location in memory.
+
+Here’s an example:
+
+static N: i32 = 5;
+Unlike let bindings, you must annotate the type of a static.
+
+Statics live for the entire lifetime of a program, and therefore any reference stored in a constant has a 'static lifetime:
+
+static NAME: &'static str = "Steve";
+
+### casting
+
+let x: i32 = 5;
+
+let y = x as i64;
+
+### Overview
+
+The Rust project was initiated to solve two thorny problems:
+
+How do you do safe systems programming?
+
+How do you make concurrency painless?
+
+Memory safety bugs and concurrency bugs often come down to code accessing data when it shouldn’t. 
+Rust’s secret weapon is ownership, a discipline for access control that systems programmers try to follow, but that 
+Rust’s compiler checks statically for you.
