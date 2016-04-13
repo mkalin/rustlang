@@ -37,6 +37,18 @@
       s = 123;           // supply the required binding value
       println!("Put the value {} here, not elswhere.", s); // outputs: Put the value 127 here, not elsewhere. 
 
+ # Bindings are block scoped in an intuitive way, with braces as block delimiters. Here's an
+   example with main (whose body is a block) and an unnamed block within main:
+
+   fn main() {
+      let n = 27;                 // scope extends until the closing brace for 'main'
+      {
+         let m = -999;            // scope extends to the closing brace marked "end of nested block"
+         println!("{} {}", n, m); // ok because n and m are both 'in scope'
+      }                           // end of nested block
+      println!("{} {}", n, m);    // ### error: m is no longer 'in scope'
+   }
+
       
 
  
