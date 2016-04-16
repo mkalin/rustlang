@@ -3,7 +3,7 @@
 
  # In programming languages such as C/C++, C#/Java, and JavaScript/Perl/Pyton/Ruby,
    the 'variable declaration' is a familiar construct, although the syntax may differ
-   (perhaps just slightly) among the languages. There's a Java example, with comments:
+   (perhaps just slightly) among the languages. Here's a Java example:
 
       int num = -1;   // declare a variable named 'num' and initialize its value to -1
       num = num + 1;  // increment the variable: its value is now 0

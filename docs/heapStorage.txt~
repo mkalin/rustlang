@@ -1,0 +1,27 @@
+
+ -- Why heap storage is so tricky
+
+ # Stack storage, which provides 'scratchpad' storage for local variables and parameters,
+   is allocated and deallocated at compile-time: the compiler figures out what's needed.
+
+   Example:  Pretend that the compiler does not optimized by, e.g., using registers instead
+             of the stack.
+ 
+             Also, we'll pretend that the arguments to sum_up are stored in sum_up's call frame,
+             but on most systems they'd be stored in main's call frame.
+
+   // ### stack needs for main: storage for 4 32-bit integers (n1, n2, n3, and sum)
+   fn main() {
+      let n1 = 27;
+      let n2 = 72;
+      let n3 = 10;
+      let sum = sum_up(n1, n2, n3);
+      ...  
+   }
+
+   // ### stack needs for sum_up:  
+   fn sum_up(a1: i32, a2: i32, a3: i32) -> i32 {
+      let temp = a1 + a2 + a3;
+      temp
+   }
+   

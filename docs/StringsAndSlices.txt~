@@ -1,0 +1,10 @@
+
+ -- Strings and string slices
+
+ # Rust as a string type std::str::String, which is a struct with the implementation methods one would expect.
+
+   ## A String binding such as 
+
+        let hi = String::from("Hello, world!");
+
+      the name 'hi' has ownership of the string.

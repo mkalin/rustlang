@@ -16,15 +16,18 @@
          // function's body
       }
 
+      // 1 floating-point arg, returns a floating-point value
       fn bar(num: f32) -> f32 {
          // function's body
-         
       }
 
       // a function can return multiple values, not just one
       fn baz(num: f32) -> (f32, f32) {
          // function's body
       }
+
+      // the function baz could be called as follows:
+      let (n1, n2) = baz(12.3, 3.21);  // n1 binds to the 1st returned value, n2 to the 2nd
 
 
    ## The functions can occur in any order in a source file, and a program's
@@ -34,13 +37,14 @@
    methods:
 
      // program slice to illustrate a method
-     let array = [1, 2, 3];  // an array of three integers
-     for n in array.iter()   // iter() is an array method for iterating over an array
-       ...
+     let array = [1, 2, 3];   // an array of three integers
+     for n in array.iter() {  // iter() is an array method for iterating over an array
+       println!("{}", n);     // 1, 2, 3
+     }
 
  # All functions can take none or more arguments, and optionally return a value. Although
    Rust has a 'return' statement, the preferred way to return a value is to make the
-   corresponding expression the last in a function:
+   appropriate expression the last in a function:
 
      // using an explicit return statement
      fn sum(n1: i32, n2: i32) -> i32 {

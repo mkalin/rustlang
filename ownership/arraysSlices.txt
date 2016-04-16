@@ -5,7 +5,7 @@
 
  # An array is fixed-sized, and its size is determined at compile-time.
  
-   ## An array cannot be 'resized': it retains its original size.
+   ## An array cannot be resized: it retains its original size.
 
  # An array slice, or just 'slice' for short, is variable-size, and its size is determined at run-time.
  *******

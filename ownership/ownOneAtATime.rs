@@ -1,13 +1,13 @@
 fn main() {
-    // quick review 
+    // quick review: two bindings through a 'copy' operation
     let n1 = 1234;                      // a binding: n1 to 1234
     let n2 = n1;                        // 'copy semantics': the value 1234 is now bound to n2 as well
     println!("n1: {}\tn2: {}", n1, n2); // n1 == 1234, n2 == 1234
 
     // now for the new stuff...
-    let v1 = vec![-1, -2, -3];
+    let v1 = vec![-1, -2, -3];       // the vector is on the heap, not the stack
     println!("v1[2] is: {}", v1[2]); // -3 as expected
-    let v2 = v1;                     // ok: copy v1 to v2 -- v2 now 'owns'
+    let v2 = v1;                     // bind v1's value to v2 -- v2 now 'owns' the binding: 'move semantics'
     println!("v2[2] is: {}", v2[2]); // -3 as expected
 
     /* If uncommented, the following line causes an error because v2 now 'owns'
