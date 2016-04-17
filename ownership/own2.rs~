@@ -1,8 +1,0 @@
-
-fn main() {
-    let v1 = vec![1, 2, 3];  // v1 'owns' the binding
-    let v2 = v1;             // v2 now 'owns' the binding
-    println!("{:?}", v1);    // ERROR -- v1 is not the owner
-
-
-}
