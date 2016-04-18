@@ -12,6 +12,6 @@ fn main() {
             n += 1;
         });
     }
-    thread::sleep(Duration::from_millis(3000));
+    thread::sleep(Duration::from_secs(3));
     println!("{}", n);
 }
