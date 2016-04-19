@@ -1,13 +1,13 @@
 use std::fmt;
 
+// Note that it's ok for there to be a comma even after the last field in the struct
 struct Button {
     x:      i32,             // x-coordinate
     y:      i32,             // y-coordinate
     w:      i32,             // width
     h:      i32,             // height
     opaque: bool,            // opposite of transparent
-    label:  &'static str     // text displayed on the button
-    //...                    // a lot more, if we like
+    label:  &'static str,    // text displayed on the button (could drop the comma if we want)
 }
 
 // The Size trait might be associated with various other types, graphical (e.g., MenuItem, Menu,
@@ -40,12 +40,13 @@ impl fmt::Display for Button {
 
 fn main() {
     let b = Button {
-        x: 0,
-        y: 0,
-        w: 100,
+        x: 30,
+        y: 20,
+        w: 150,
         h: 100,
         opaque: false,
         label: "Click me!"
     };
     println!("The button: {}", b.to_string());
+    
 }

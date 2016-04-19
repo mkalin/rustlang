@@ -6,6 +6,10 @@ use std::str;
    occurrence of a str is in its 'borrowed' form, &str. A string literal such as "Hello!"
    can be represented as &'static str, a 'borrowed' and static (lifetime of the program) 
    string slice.
+
+   A String is mutuable by nature: it can be grown and shrunk as needed. A String in Rust would be, for
+   example, a StringBuffer in Java. By constrast, a string slice is immutable by nature--it's a string
+   literal borrowed from some underlying String.
  */
 
 fn main() {
