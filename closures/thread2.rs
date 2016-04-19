@@ -12,6 +12,6 @@ fn main() {
             n += 1;
         });
     }
-    thread::sleep(Duration::from_secs(3));
-    println!("{}", n);
+    thread::sleep(Duration::from_secs(3)); // a lifetime for a computer...
+    println!("n after the spawned threads have died is: {}", n);
 }

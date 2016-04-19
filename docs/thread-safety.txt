@@ -1,0 +1,33 @@
+
+ -- Thread-safety in Rust
+
+ # The 'memory safety' of Rust comes into play with respect to concurrency by safe-guarding against
+   race conditions.
+
+   ## The compiler simply won't translate Rust code that implements the usual race conditions.
+
+ # Two traits, Send and Sync, are foudational for thread-safe concurrency in Rust:
+
+   ## Send
+
+      Example: Consider a thread T1 that is meant to transfer ownership of a type instance Obj (e.g., a 
+               Vector) to thread T2:
+
+      -- T1 owns Vector vec.
+
+      -- T1 transfers ownership of vec to T2, but without the possibility of a race condition.
+
+      -- Because Vector has trait Send, this can be done.
+
+      -- The standard way to transfer ownership is through a channel:
+
+                      channel
+                         \
+         T1------------------------------>T2
+                        /
+   transfer ownership of vec by sending vec down this channel
+      
+         ### If Vector didn't have the Send trait, then vec couldn't be sent down this channel.
+
+
+

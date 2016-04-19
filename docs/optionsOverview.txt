@@ -1,0 +1,54 @@
+ Options for thread synchronization (including cooperation)
+
+ # Setting up a 'data race' ('race condition'):
+
+   ## A storage location (e.g., memory location on the stack or heap) is mutable.
+  
+   ## This location is accessible to multiple threads within the same process.
+
+ # How to prevent a data race under these conditions:
+
+   ## Ensure single-threaded access with a lock (mutex).
+
+   ## Have a single thread as the owner, with other threads communicating with
+      this thread instead of accessing the storage location directly.
+
+ # The basic mutex (lock) approach:
+
+   ## Mutable storage location N is accessible across many threads:
+
+            acquire lock   use lock to access shared storage
+                  \             /
+                   \           /    +-----+   |
+	 thread1------->lock------->|  7  |   |<----other threads have no access
+                                    +-----+   |
+                                       N      ## N is shared across threads
+
+    ## The locking ensures mutual exclusion for thread access to critical-section code.
+
+    ## C (pthread_mutex_t data type) and Java (synchronized block) illustrate this approach.
+
+       ### Java has various data types (e.g., Atomic Integer) with the synchronization baked in
+	   
+	   ### The fixes shown so far for the miser/sprendthrift problem use the locking approach:
+	       the shared bank account is locked to ensure single-threaded access to the critical-section
+	       code that accesses that account.
+
+ # The thread-safe channel approach:
+
+   ## Don't lock the storage, but instead designate a single thread as its de facto controller.
+ 
+      ### In this example, thread N-controller would have sole access to storage N.
+
+      ### The N-controller treats N as if it were its own scratchpad storage: other threads
+	      have to communicate with the N-controller to gain any access to N.
+
+      ### Messages (perhaps parametrize) are suited to requirement:
+
+                   thread-safe channel
+                          /                              +-----+
+          threads---------------------->N-owner--------->|  7  | ## the N-owner has sole access to N
+			                                 +-----+
+                                                            N
+
+ 
