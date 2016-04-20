@@ -1,0 +1,6 @@
+
+fn main() {
+    let array1 = [-1, -2, -3];        // fixed size, all elements of the same type (i32)
+    let tuple1 = (987, "hi", 3.1415); // fixed size, elements need not be of the same type
+
+}

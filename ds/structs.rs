@@ -41,6 +41,18 @@ impl fmt::Display for Employee {
     }
 }
 
+impl fmt::Display for Product {
+
+}
+
+impl fmt::Display for Firm {
+
+}
+
+impl addEmp for Firm {
+
+}
+
 // Simply derive the implementation for defaults: Rust types take on their default values.
 // The #[...] syntax indicates an 'attribute', metadata for the compiler in this case.
 // The derivable Traits are (with T for 'type instance' and &T for 'reference to type instance'):
